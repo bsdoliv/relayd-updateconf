@@ -19,3 +19,19 @@ CLEANFILES+=	y.tab.h
 
 run: .PHONY
 	./relayd-updateconf -f ./relayd.conf
+
+DISTSRCS=	${SRCS}
+DISTSRCS+=	Makefile
+DISTSRCS+=	relayd-updateconf.1
+DISTSRCS+=	relayd.conf
+DISTSRCS+=	updateconf.h
+
+DISTNAME=	relayd-updateconf-5.6.2
+dist: .PHONY ${DISTNAME}.tar.gz
+
+${DISTNAME}.tar.gz:
+	mkdir ${DISTNAME}
+	cp ${DISTSRCS} ${DISTNAME}
+	tar -zcvf $@ ${DISTNAME}
+
+CLEANFILES+=	${DISTNAME}.tar.gz
