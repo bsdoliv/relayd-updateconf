@@ -34,4 +34,7 @@ ${DISTNAME}.tar.gz:
 	cp ${DISTSRCS} ${DISTNAME}
 	tar -zcvf $@ ${DISTNAME}
 
+distclean: .PHONY
+	rm -rf ${DISTNAME}
+
 CLEANFILES+=	${DISTNAME}.tar.gz
