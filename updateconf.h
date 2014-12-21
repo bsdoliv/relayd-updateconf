@@ -25,7 +25,6 @@
 
 #include <sys/param.h>		/* MAXHOSTNAMELEN */
 #include <limits.h>
-#include <imsg.h>
 
 #define CONF_FILE		"/etc/relayd.conf"
 #define CHECK_TIMEOUT		200
@@ -406,7 +405,6 @@ struct relayd {
 	struct timeval		 sc_timeout;
 	struct table		 sc_empty_table;
 	struct protocol		 sc_proto_default;
-	struct event		 sc_ev;
 	struct tablelist	*sc_tables;
 	struct rdrlist		*sc_rdrs;
 	struct protolist	*sc_protos;

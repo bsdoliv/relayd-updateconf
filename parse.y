@@ -25,12 +25,8 @@
  */
 
 %{
-#include <sys/types.h>
 #include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/queue.h>
 #include <sys/ioctl.h>
-#include <sys/hash.h>
 
 #include <net/if.h>
 #include <net/pfvar.h>
@@ -43,7 +39,6 @@
 #include <unistd.h>
 #include <err.h>
 #include <errno.h>
-#include <event.h>
 #include <limits.h>
 #include <stdint.h>
 #include <stdarg.h>
@@ -51,7 +46,6 @@
 #include <netdb.h>
 #include <string.h>
 #include <ifaddrs.h>
-#include <syslog.h>
 
 #include <openssl/ssl.h>
 

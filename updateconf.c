@@ -18,7 +18,7 @@
  */
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <sys/resource.h>
+#include <sys/queue.h>
 
 #include <net/if.h>
 #include <netinet/in.h>
@@ -27,11 +27,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <netdb.h>
-#include <event.h>
 #include <err.h>
 #include <errno.h>
-#include <sha1.h>
-#include <md5.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <string.h>
