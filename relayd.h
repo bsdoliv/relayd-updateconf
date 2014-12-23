@@ -449,22 +449,4 @@ int		 protonode_add(enum direction, struct protocol *,
 		    struct protonode *);
 int		 protonode_load(enum direction, struct protocol *,
 		    struct protonode *, const char *);
-char		*print_tcpport(in_port_t);
-void		 proto_print_node(struct protocol *, struct protonode *,
-		    char **);
-void		 proto_print_opts(struct protocol *, char *, size_t);
-void		 proto_print_flags(struct protocol *, char *, size_t);
-void		 proto_print_label(const char *, char *, size_t);
-void		 rdr_print_forward(struct rdr *, int, char *, size_t);
-void		 rdr_print_listen(struct rdr *, char *, size_t);
-void		 relay_print_forward(struct relay *, struct relay_table *,
-		     char *, size_t);
-void		 relay_print_listen(struct relay *, char *, size_t);
-void		 relay_print_session(struct relay *, char *, size_t);
-void		 rts_print_forward(struct router *, char *, size_t);
-void		 rts_print_route(struct netroute *, char *, size_t);
-void		 table_print(struct table *, char *, size_t);
-char		*getsslflag(u_int8_t);
-char		**opts_add(char **, size_t *, const char *);
-
 #endif /* _RELAYD_H */

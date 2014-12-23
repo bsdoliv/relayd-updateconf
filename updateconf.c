@@ -31,13 +31,14 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "updateconf.h"
 #include "relayd.h"
+#include "updateconf.h"
 
 __dead void	 usage(void);
 void		 parseconf(struct relayd *env);
 char		*getprototype(struct protocol *);
 char		*getdstmode(enum dstmode);
+const char	*print_host(struct sockaddr_storage *, char *, size_t);
 char		*print_tablecheck(struct table *);
 char		*print_tcpport(in_port_t);
 void		 print_rts_forward(struct router *);
