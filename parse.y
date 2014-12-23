@@ -1,5 +1,3 @@
-/*	$OpenBSD$	*/
-
 /*
  * Copyright (c) 2007 - 2014 Reyk Floeter <reyk@openbsd.org>
  * Copyright (c) 2008 Gilles Chehade <gilles@openbsd.org>
@@ -49,6 +47,7 @@
 
 #include <openssl/ssl.h>
 
+#include "relayd.h"
 #include "updateconf.h"
 
 TAILQ_HEAD(files, file)		 files = TAILQ_HEAD_INITIALIZER(files);

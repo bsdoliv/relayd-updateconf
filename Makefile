@@ -1,7 +1,7 @@
 PROG=		relayd-updateconf
 
 SRCS=		parse.y
-SRCS+=		updateconf.c
+SRCS+=		updateconf.c relayd.c
 
 BINDIR=		/usr/local/bin
 

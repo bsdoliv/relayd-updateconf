@@ -1,8 +1,5 @@
-/*	$OpenBSD$	*/
-
 /*
  * Copyright (c) 2014 Andre de Oliveira <andre@openbsd.org>
- * Copyright (c) 2007 - 2014 Reyk Floeter <reyk@openbsd.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,6 +13,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/queue.h>
@@ -36,16 +34,12 @@
 #include "updateconf.h"
 
 __dead void	 usage(void);
-static __inline int
-		 relay_proto_cmp(struct protonode *, struct protonode *);
-
 void		 parseconf(struct relayd *env);
 char		*getprototype(struct protocol *);
 char		*getdstmode(enum dstmode);
 char		*print_tablecheck(struct table *);
 char		*print_tcpport(in_port_t);
 void		 print_rts_forward(struct router *);
-void		 purge_relay(struct relayd *, struct relay *);
 void		 protonode_opts_add(struct protocol *, struct protonode *);
 
 __dead void
@@ -62,7 +56,7 @@ int
 main(int argc, char *argv[])
 {
 	int			 c;
-	const char		*conffile = CONF_FILE;
+	const char		*conffile = "/etc/relayd.conf";
 	struct relayd		*env;
 
 	while ((c = getopt(argc, argv, "f:")) != -1) {
@@ -88,123 +82,6 @@ main(int argc, char *argv[])
 
 	parseconf(env);
 	return (0);
-}
-
-void
-purge_table(struct tablelist *head, struct table *table)
-{
-	struct host		*host;
-
-	while ((host = TAILQ_FIRST(&table->hosts)) != NULL) {
-		TAILQ_REMOVE(&table->hosts, host, entry);
-		free(host);
-	}
-	if (head != NULL)
-		TAILQ_REMOVE(head, table, entry);
-	free(table);
-}
-
-void
-purge_relay(struct relayd *env, struct relay *rlay)
-{
-	struct relay_table	*rlt;
-
-	TAILQ_REMOVE(env->sc_relays, rlay, rl_entry);
-	while ((rlt = TAILQ_FIRST(&rlay->rl_tables))) {
-		TAILQ_REMOVE(&rlay->rl_tables, rlt, rlt_entry);
-		free(rlt);
-	}
-	free(rlay);
-}
-
-struct table *
-table_findbyname(struct relayd *env, const char *name)
-{
-	struct table	*table;
-
-	TAILQ_FOREACH(table, env->sc_tables, entry)
-		if (strcmp(table->conf.name, name) == 0)
-			return (table);
-	return (NULL);
-}
-
-void
-translate_string(char *str)
-{
-	char	*reader;
-	char	*writer;
-
-	reader = writer = str;
-
-	while (*reader) {
-		if (*reader == '\\') {
-			reader++;
-			switch (*reader) {
-			case 'n':
-				*writer++ = '\n';
-				break;
-			case 'r':
-				*writer++ = '\r';
-				break;
-			default:
-				*writer++ = *reader;
-			}
-		} else
-			*writer++ = *reader;
-		reader++;
-	}
-	*writer = '\0';
-}
-
-struct table *
-table_findbyconf(struct relayd *env, struct table *tb)
-{
-	struct table		*table;
-	struct table_config	 a, b;
-
-	bcopy(&tb->conf, &a, sizeof(a));
-	a.id = a.rdrid = 0;
-	a.flags &= ~(F_USED|F_BACKUP);
-
-	TAILQ_FOREACH(table, env->sc_tables, entry) {
-		bcopy(&table->conf, &b, sizeof(b));
-		b.id = b.rdrid = 0;
-		b.flags &= ~(F_USED|F_BACKUP);
-
-		/*
-		 * Compare two tables and return the existing table if
-		 * the configuration seems to be the same.
-		 */
-		if (bcmp(&a, &b, sizeof(b)) == 0 &&
-		    ((tb->sendbuf == NULL && table->sendbuf == NULL) ||
-		    (tb->sendbuf != NULL && table->sendbuf != NULL &&
-		    strcmp(tb->sendbuf, table->sendbuf) == 0)))
-			return (table);
-	}
-	return (NULL);
-}
-
-struct relay *
-relay_findbyaddr(struct relayd *env, struct relay_config *rc)
-{
-	struct relay	*rlay;
-
-	TAILQ_FOREACH(rlay, env->sc_relays, rl_entry)
-		if (bcmp(&rlay->rl_conf.ss, &rc->ss, sizeof(rc->ss)) == 0 &&
-		    rlay->rl_conf.port == rc->port)
-			return (rlay);
-	return (NULL);
-}
-
-struct relay *
-relay_findbyname(struct relayd *env, const char *name)
-{
-	struct relay	*rlay;
-
-	TAILQ_FOREACH(rlay, env->sc_relays, rl_entry)
-		if (strcmp(rlay->rl_conf.name, name) == 0)
-			return (rlay);
-	return (NULL);
 }
 
 int
@@ -423,29 +300,6 @@ parseconf(struct relayd *env)
 			purge_table(env->sc_tables, table);
 		env->sc_tablecount = 0;
 	}
-}
-
-static __inline int
-relay_proto_cmp(struct protonode *a, struct protonode *b)
-{
-	int ret;
-	ret = strcasecmp(a->key, b->key);
-	if (ret == 0)
-		ret = (int)a->type - b->type;
-	return (ret);
-}
-
-struct host *
-host_find(struct relayd *env, objid_t id)
-{
-	struct table	*table;
-	struct host	*host;
-
-	TAILQ_FOREACH(table, env->sc_tables, entry)
-		TAILQ_FOREACH(host, &table->hosts, entry)
-			if (host->conf.id == id)
-				return (host);
-	return (NULL);
 }
 
 int
@@ -1100,5 +954,3 @@ getprototype(struct protocol *p)
 		break;
 	}
 }
-
-RB_GENERATE(proto_tree, protonode, nodes, relay_proto_cmp);
