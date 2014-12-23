@@ -35,5 +35,7 @@ void		 rdr_print_listen(struct rdr *, char *, size_t);
 void		 relay_print_forward(struct relay *, struct relay_table *,
 		     char *, size_t);
 void		 relay_print_listen(struct relay *, char *, size_t);
+int		 protonode_add(enum direction, struct protocol *,
+		    struct protonode *);
 
 #endif /* _UPDATECONF_H */

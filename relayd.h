@@ -231,9 +231,6 @@ struct protonode {
 };
 RB_HEAD(proto_tree, protonode);
 
-#define PROTONODE_FOREACH(elm, root, field)				\
-	for (elm = root; elm != NULL; elm = SIMPLEQ_NEXT(elm, entry))	\
-
 enum prototype {
 	RELAY_PROTO_TCP		= 0,
 	RELAY_PROTO_HTTP	= 1,
@@ -442,11 +439,6 @@ struct relay	*relay_findbyaddr(struct relayd *, struct relay_config *);
 void		 translate_string(char *);
 void		 purge_table(struct tablelist *, struct table *);
 void		 purge_relay(struct relayd *, struct relay *);
-struct protonode
-		*protonode_header(enum direction, struct protocol *,
-		    struct protonode *);
-int		 protonode_add(enum direction, struct protocol *,
-		    struct protonode *);
 int		 protonode_load(enum direction, struct protocol *,
 		    struct protonode *, const char *);
 #endif /* _RELAYD_H */

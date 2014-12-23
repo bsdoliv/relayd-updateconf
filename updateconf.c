@@ -865,47 +865,6 @@ protonode_opts_add(struct protocol *proto, struct protonode *pn)
 		goto redo;
 }
 
-int
-protonode_load(enum direction dir, struct protocol *proto,
-    struct protonode *node, const char *name)
-{
-	FILE			*fp;
-	char			 buf[BUFSIZ];
-	int			 ret = -1;
-	struct protonode	 pn;
-
-	bcopy(node, &pn, sizeof(pn));
-	pn.key = pn.value = NULL;
-
-	if ((fp = fopen(name, "r")) == NULL)
-		return (-1);
-
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		/* strip whitespace and newline characters */
-		buf[strcspn(buf, "\r\n\t ")] = '\0';
-		if (!strlen(buf) || buf[0] == '#')
-			continue;
-		pn.key = strdup(buf);
-		if (node->value != NULL)
-			pn.value = strdup(node->value);
-		if (pn.key == NULL ||
-		    (node->value != NULL && pn.value == NULL))
-			goto fail;
-		if (protonode_add(dir, proto, &pn) == -1)
-			goto fail;
-		pn.key = pn.value = NULL;
-	}
-
-	ret = 0;
- fail:
-	if (pn.key != NULL)
-		free(pn.key);
-	if (pn.value != NULL)
-		free(pn.value);
-	fclose(fp);
-	return (ret);
-}
-
 char *
 getsslflag(u_int8_t f)
 {
