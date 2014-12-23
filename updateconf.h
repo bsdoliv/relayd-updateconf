@@ -18,7 +18,6 @@
 #define _UPDATECONF_H
 
 /* updateconf.c */
-int		 config_init(struct relayd *);
 __dead void	 fatal(const char *);
 const char	*print_host(struct sockaddr_storage *, char *, size_t);
 

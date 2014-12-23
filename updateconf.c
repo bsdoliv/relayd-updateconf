@@ -32,6 +32,7 @@
 #include <string.h>
 
 #include "updateconf.h"
+#include "relayd.h"
 
 __dead void	 usage(void);
 void		 parseconf(struct relayd *env);
@@ -73,28 +74,13 @@ main(int argc, char *argv[])
 		errx(1, "out of memory");
 
 	env->sc_conffile = conffile;
-
-	if (config_init(env) == -1)
-		errx(-1, "cannot initialize configuration");
-
-	if (load_config(env->sc_conffile, env) == -1)
-		errx(1, "fail on load_config()");
-
-	parseconf(env);
-	return (0);
-}
-
-int
-config_init(struct relayd *env)
-{
-	env->sc_timeout.tv_sec = CHECK_TIMEOUT / 1000;
 	env->sc_timeout.tv_usec = (CHECK_TIMEOUT % 1000) * 1000;
 	env->sc_interval.tv_sec = CHECK_INTERVAL;
 	env->sc_interval.tv_usec = 0;
 
 	if ((env->sc_tables =
 	    calloc(1, sizeof(*env->sc_tables))) == NULL)
-		return (-1);
+		errx(-1, "cannot initialize configuration");
 	TAILQ_INIT(env->sc_tables);
 
 	memset(&env->sc_empty_table, 0, sizeof(env->sc_empty_table));
@@ -105,16 +91,16 @@ config_init(struct relayd *env)
 
 	if ((env->sc_rdrs =
 	    calloc(1, sizeof(*env->sc_rdrs))) == NULL)
-		return (-1);
+		errx(-1, "cannot initialize configuration");
 	TAILQ_INIT(env->sc_rdrs);
 
 	if ((env->sc_relays = calloc(1, sizeof(*env->sc_relays))) == NULL)
-		return (-1);
+		errx(-1, "cannot initialize configuration");
 	TAILQ_INIT(env->sc_relays);
 
 	if ((env->sc_protos =
 	    calloc(1, sizeof(*env->sc_protos))) == NULL)
-		return (-1);
+		errx(-1, "cannot initialize configuration");
 	TAILQ_INIT(env->sc_protos);
 
 	bzero(&env->sc_proto_default, sizeof(env->sc_proto_default));
@@ -132,13 +118,17 @@ config_init(struct relayd *env)
 	    sizeof(env->sc_proto_default.name));
 
 	if ((env->sc_rts = calloc(1, sizeof(*env->sc_rts))) == NULL)
-		return (-1);
+		errx(-1, "cannot initialize configuration");
 	TAILQ_INIT(env->sc_rts);
 
 	if ((env->sc_routes = calloc(1, sizeof(*env->sc_routes))) == NULL)
-		return (-1);
+		errx(-1, "cannot initialize configuration");
 	TAILQ_INIT(env->sc_routes);
 
+	if (load_config(env->sc_conffile, env) == -1)
+		errx(1, "fail on load_config()");
+
+	parseconf(env);
 	return (0);
 }
 
