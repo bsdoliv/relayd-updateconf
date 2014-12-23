@@ -25,6 +25,8 @@ DISTSRCS+=	Makefile
 DISTSRCS+=	relayd-updateconf.1
 DISTSRCS+=	relayd.conf
 DISTSRCS+=	updateconf.h
+DISTSRCS+=	relayd.h
+DISTSRCS+=	relayd.c
 
 DISTNAME=	relayd-updateconf-5.6.2
 dist: .PHONY ${DISTNAME}.tar.gz
