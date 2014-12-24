@@ -426,7 +426,6 @@ struct relayd {
 
 /* parse.y */
 int	 load_config(const char *, struct relayd *);
-int	 cmdline_symset(char *);
 
 RB_PROTOTYPE(proto_tree, protonode, se_nodes, relay_proto_cmp);
 
